@@ -18,6 +18,7 @@ class MazeEnv(gym.Env):
                  pob_size=1,
                  action_type='VonNeumann',
                  obs_type='full',
+                 init_and_goal_states=None,
                  live_display=False,
                  render_trace=False):
         """Initialize the maze. DType: list"""
@@ -25,7 +26,11 @@ class MazeEnv(gym.Env):
         self.maze_generator = maze_generator
         self.maze = np.array(self.maze_generator.get_maze())
         self.maze_size = self.maze.shape
-        self.init_state, self.goal_states = self.maze_generator.sample_state()
+        if init_and_goal_states==None:
+            self.init_state,self.goal_states = self.maze_generator.sample_state()
+        else:
+            self.init_state=init_and_goal_states['i']
+            self.goal_states=init_and_goal_states['g']
         
         self.render_trace = render_trace
         self.traces = []
@@ -146,6 +151,7 @@ class MazeEnv(gym.Env):
             self.ax_partial_img = self.ax_partial.imshow(partial_obs, cmap=self.cmap, norm=self.norm, animated=True)
         
         plt.draw()
+        #plt.show()
         
         if self.live_display:
             # Update the figure display immediately
